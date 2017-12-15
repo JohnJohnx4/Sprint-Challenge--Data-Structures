@@ -1,8 +1,5 @@
-// A special array class that can only store the number of items specified by the `limit` argument
 class LimitedArray {
   constructor(limit) {
-    // You should not be directly accessing this array from your hash table methods
-    // Use the getter and setter methods included in this class to manipulate data in this class
     this.storage = [];
     this.limit = limit;
   }
@@ -19,7 +16,7 @@ class LimitedArray {
       cb(this.storage[i], i);
     }
   }
-  // Use this getter function to fetch elements from this class
+
   get(index) {
     this.checkLimit(index);
     return this.storage[index];
@@ -28,17 +25,14 @@ class LimitedArray {
   get length() {
     return this.storage.length;
   }
-  // Use this setter function to add elements to this class
+
   set(index, value) {
     this.checkLimit(index);
     this.storage[index] = value;
   }
 }
 /* eslint-disable no-bitwise, operator-assignment */
-// This is hash function you'll be using to hash keys
-// There's some bit-shifting magic going on here, but essentially, all it is doing is performing the modulo operator
-// on the given `str` arg (the key) modded by the limit of the limited array
-// This simply ensures that the hash function always returns an index that is within the boundaries of the limited array
+
 const getIndexBelowMax = (str, max) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -49,7 +43,55 @@ const getIndexBelowMax = (str, max) => {
   return hash % max;
 };
 
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  addToTail(value) {
+    const newNode = {
+      next: null,
+      value,
+    };
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+      return;
+    }
+    this.tail.next = newNode;
+    this.tail = newNode;
+    this.size++;
+  }
+
+  removeHead() {
+    if (this.head === null) return;
+    if (this.head.next === null) {
+      const head = this.head;
+      this.head = null;
+      this.tail = null;
+      return head.value;
+    }
+    const head = this.head;
+    this.head = this.head.next;
+    this.size--;
+    return head.value;
+  }
+
+  contains(value) {
+    if (this.head === null) return false;
+    const searchList = (node) => {
+      if (node.value === value) return true;
+      if (node.next === null) return false;
+      return searchList(node.next);
+    };
+    return searchList(this.head);
+  }
+}
+
 module.exports = {
   LimitedArray,
   getIndexBelowMax,
+  LinkedList,
 };
